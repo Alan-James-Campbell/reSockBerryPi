@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import socketIOClient from 'socket.io-client'
+const ENDPOINT = 'http://127.0.0.1:4001'
+const socket = socketIOClient(ENDPOINT)
 
-function App() {
+
+const App = () => {
+  const [ledStatus, setLedStatus ] = useState(false)
+
+  useEffect(() => {
+    socket
+      .on('LED-STATUS', bool => {
+        setLedStatus(bool)
+      })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>{ledStatus ? 'on' : 'off'}</h1>
+      <button 
+        onClick={e => {
+          socket.emit('LED-STATUS-CHANGE', true)
+        }}
+      >
+        turn on
+      </button>
+      <button 
+        onClick={e => {
+          socket.emit('LED-STATUS-CHANGE', false)
+        }}
+      >
+        turn off
+      </button>
+
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
+
