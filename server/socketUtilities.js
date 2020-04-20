@@ -7,8 +7,15 @@ const addSocketListeners = (socket, io) => {
     console.log('Client disconnected')
   })
 
-  socket.on('LED-STATUS-CHANGE', (res) => {
-    io.emit('LED-STATUS', res)
+  socket.on('LED-STATUS-CHANGE', res => {
+    io.emit('LED-STATUS-UPDATE', res)
+  })
+  
+  socket.on('LED-STATUS-CHECK', res => {
+    console.log('ok')
+    const red = new Gpio(17, {mode: Gpio.OUTPUT})
+    const green = new Gpio(18, {mode: Gpio.OUTPUT})
+    io.emit('LED-STATUS-UPDATE', !!dutyCycleTimer)
   })
 
    socket.on('LED-STATUS-CHANGE', res => {
